@@ -50,8 +50,8 @@ Create a `.env` file in the root directory of your project and add the following
 
 ```ini
 PORT=8000
-MONGODB_URI=mongodb+srv://Bcloud:b123@cluster0.hkdquhx.mongodb.net
-JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+MONGODB_URI=your mongodb_uri
+JWT_SECRET=your secret code
 CORS_ORIGIN=*
 ```
 
