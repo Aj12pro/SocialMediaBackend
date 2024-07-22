@@ -61,7 +61,7 @@ const userSchema = new Schema(
     }
 )
 
-//  Fot the Post Schemwa 
+//  Fot the Post Schema
 
 const postSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User'   },
@@ -69,6 +69,18 @@ const postSchema = new mongoose.Schema({
     image: { type: String },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
+  });
+
+
+//    For the Comment Schema 
+
+const commentSchema = new mongoose.Schema({
+    postId: { type: mongoose.Schema.Types.ObjectId, ref: 'Post' },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    content: String,
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   });
@@ -86,6 +98,7 @@ userSchema.methods.isPasswordCorrect = async function(password){
     console.log(password)
     return await bcrypt.compare(password, this.password)
 }
+
 
 
 userSchema.methods.generateAccessToken = function(){
@@ -117,3 +130,4 @@ userSchema.methods.generateRefreshToken = function(){
 
 export const User = mongoose.model("B_user", userSchema)
 export const Post = mongoose.model('Post', postSchema);
+export const Comment = mongoose.model('Comment', commentSchema);

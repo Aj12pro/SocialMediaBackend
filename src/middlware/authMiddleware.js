@@ -7,7 +7,7 @@ import { User } from "../models/user.model.js";
     try {
         const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
         
-        // console.log(token);
+           console.log( "token" ,token);
         if (!token) {
             throw new ApiError(401, "Unauthorized request")
         }
@@ -43,6 +43,7 @@ const authMiddleware = async (req, res, next) => {
   
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log('Decoded Token:', decoded);
       const user = await User.findById(decoded.id);
   
       if (!user) {

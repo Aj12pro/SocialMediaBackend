@@ -14,7 +14,8 @@ import {
 } from "../controllers/userDataControllers.js";
 import {upload} from "../middlware/multerMiddleware.js"
 import { verifyJWT } from "../middlware/authMiddleware.js";
-import { createPost } from "../controllers/userPostControllers.js";
+import { createPost,   updatePost , deletePost, getPost, getPostsByUserId } from "../controllers/userPostControllers.js";
+import { createComment  , updateComment} from "../controllers/commentController.js";
 import { authMiddleware } from "../middlware/authMiddleware.js";
  
 
@@ -39,16 +40,15 @@ routers.route("/login").post(loginUser)
 
 //secured routes
 routers.route("/logout").post(verifyJWT,  logoutUser)
-  routers.route("/refresh-token").post(refreshAccessToken)
+routers.route("/refresh-token").post(refreshAccessToken)
 routers.route("/change-password").post(verifyJWT, changeCurrentPassword)
 routers.route("/current-user").get(verifyJWT, getCurrentUser)
 routers.route("/update-account").patch(verifyJWT, updateAccountDetails)
 
 routers.route("/avatar").patch(verifyJWT, upload.single("avatar"), updateUserAvatar)
-// router.route("/cover-image").patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage)
+routers.route("/cover-image").patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage)
 
-// router.route("/c/:username").get(verifyJWT, getUserChannelProfile)
-// router.route("/history").get(verifyJWT, getWatchHistory)
+ 
 
 
 
@@ -57,8 +57,24 @@ routers.route("/avatar").patch(verifyJWT, upload.single("avatar"), updateUserAva
 
 
 // For the Post Routes 
-routers.route("/createPost").post(createPost)
-routers.post('/posts',   upload.single('image'), createPost);
+ 
+routers.post('/createPost', verifyJWT,  upload.fields([{ name: 'image', maxCount: 1 }]), createPost);
+ 
+routers.get('/getPosts/:postId', verifyJWT, getPost);
+routers.get('/getPostsById/:userId', verifyJWT, getPostsByUserId);
+
+routers.put('/updatePosts/:postId', verifyJWT, upload.fields([{ name: 'image', maxCount: 1 }]), updatePost);
+routers.delete('/deletePosts/:postId', verifyJWT, deletePost);
+
+
+ 
+
+// Routes for the comments 
+
+routers.post('/comments/:postId', verifyJWT,  createComment);
+
+
+routers.put('/comments/:commentId'  , verifyJWT, updateComment);  
 
 
 export default routers
