@@ -1,12 +1,13 @@
 
 import User from '../models/userModel.js';
+ 
 
  
 
 // Register
-  const resgisterUser =  async (req, res) => {
+const resgisterUser = async (req, res) => {
   const { email, password } = req.body;
-  
+
   try {
     let user = await User.findOne({ email });
     if (user) {
@@ -16,18 +17,16 @@ import User from '../models/userModel.js';
     user = new User({ email, password });
     await user.save();
 
-
-
     const token = user.generateAuthToken();
 
-// Set the cookie with the token
-res.cookie('authToken', token, {
-  httpOnly: true, // Helps prevent XSS attacks
-  secure: process.env.NODE_ENV === 'production', // Ensures cookie is sent over HTTPS only in production
-  maxAge: 3600000 // 1 hour
-});
+    // Set the cookie with the token
+    res.cookie('authToken', token, {
+      httpOnly: true, // Helps prevent XSS attacks
+      secure: process.env.NODE_ENV === 'production', // Ensures cookie is sent over HTTPS only in production
+      maxAge: 3600000 // 1 hour
+    });
 
-    res.json({msg:"user registered successfully " ,  token });
+    res.json({ msg: "user registered successfully", token });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');

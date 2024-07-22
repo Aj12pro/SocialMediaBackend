@@ -14,6 +14,11 @@ const userSchema = new Schema({
   }, 
 });
 
+
+
+ 
+
+
 // Hash password before saving
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
@@ -33,10 +38,10 @@ userSchema.methods.generateAuthToken = function() {
 };
 
 // Compare password
-const ajpasword =  userSchema.methods.comparePassword = async function(enteredPassword) {
+  userSchema.methods.comparePassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
-console.log(ajpasword)
+
 
 const User = mongoose.model('User', userSchema);
 

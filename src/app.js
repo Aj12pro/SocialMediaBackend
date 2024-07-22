@@ -30,11 +30,13 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 import {router} from "./routers/authRouter.js"
+import routers from "./routers/userRouter.js";
 
 
 // For the router declaration 
 
 app.use("/api/v1" , router)
+app.use("/api/v2" , routers)
 
 
 
