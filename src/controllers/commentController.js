@@ -44,6 +44,41 @@ const createComment = asyncHandler(async (req, res) => {
   });
 
 
+
+
+//  Get Comment 
+
+const getComments = asyncHandler(async (req, res) => {
+  const { postId } = req.params; // Extract postId from request parameters
+
+  // Validate postId
+  if (!mongoose.Types.ObjectId.isValid(postId)) {
+    throw new ApiError(400, "Invalid post ID");
+  }
+
+  // Check if post exists
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new ApiError(404, "Post not found");
+  }
+
+  // Fetch comments for the post
+  const comments = await Comment.find({ postId });
+
+  if (!comments) {
+    throw new ApiError(500, "Something went wrong while retrieving comments");
+  }
+
+  return res.status(200).json({
+    status: 200,
+    data: comments,
+    message: "Comments retrieved successfully"
+  });
+});
+
+
+
+
 //  update comment 
 
  
@@ -78,11 +113,15 @@ const updateComment = asyncHandler(async (req, res) => {
       message: "Comment updated successfully"
     });
   });
+
+
+
   
 
 
   export { 
     createComment ,
-    updateComment
+    updateComment ,
+    getComments
 
   }

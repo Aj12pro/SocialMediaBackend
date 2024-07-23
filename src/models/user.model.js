@@ -86,6 +86,17 @@ const commentSchema = new mongoose.Schema({
   });
 
 
+
+//  For the Notification Schema
+
+const notificationSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    type: String,
+    referenceId: mongoose.Schema.Types.ObjectId,
+    read: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now },
+  });
+
 userSchema.pre("save", async function (next) {
     if(!this.isModified("password")) return next();
 
@@ -131,3 +142,4 @@ userSchema.methods.generateRefreshToken = function(){
 export const User = mongoose.model("B_user", userSchema)
 export const Post = mongoose.model('Post', postSchema);
 export const Comment = mongoose.model('Comment', commentSchema);
+export const Notification = mongoose.model('Notification', notificationSchema);
