@@ -361,7 +361,7 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
 })
 
 
-const getUserChannelProfile = asyncHandler(async(req, res) => {
+const getUserProfile = asyncHandler(async(req, res) => {
     const {username} = req.params
 
     if (!username?.trim()) {
@@ -376,7 +376,7 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
         },
         {
             $lookup: {
-                from: "subscriptions",
+                from: "follower",
                 localField: "_id",
                 foreignField: "channel",
                 as: "subscribers"
@@ -384,29 +384,30 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
         },
         {
             $lookup: {
-                from: "subscriptions",
+                from: "follower",
                 localField: "_id",
-                foreignField: "subscriber",
-                as: "subscribedTo"
+                foreignField: "follower",
+                as: "followedTo"
             }
         },
         {
             $addFields: {
                 subscribersCount: {
-                    $size: "$subscribers"
+                    $size: "$followers"
                 },
                 channelsSubscribedToCount: {
-                    $size: "$subscribedTo"
+                    $size: "$followedTo"
                 },
                 isSubscribed: {
                     $cond: {
-                        if: {$in: [req.user?._id, "$subscribers.subscriber"]},
+                        if: {$in: [req.user?._id, "$followers.followers"]},
                         then: true,
                         else: false
                     }
                 }
             }
         },
+
         {
             $project: {
                 fullName: 1,
@@ -429,7 +430,7 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
     return res
     .status(200)
     .json(
-        new ApiResponse(200, channel[0], "User channel fetched successfully")
+        new ApiResponse(200, channel[0], "User Profile fetched successfully")
     )
 })
 
@@ -498,6 +499,6 @@ export {
     updateAccountDetails,
     updateUserAvatar,
     updateUserCoverImage,
-    getUserChannelProfile,
-    getWatchHistory
+    getUserProfile,
+     
 }
