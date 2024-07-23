@@ -115,6 +115,39 @@ const updateComment = asyncHandler(async (req, res) => {
   });
 
 
+// delete comment 
+
+const deleteComment = asyncHandler(async (req, res) => {
+  const { commentId } = req.params; // Get the comment ID from the request parameters
+  const userId = req.user._id; // Access the user ID from req.user
+
+  // Validate commentId
+  if (!mongoose.Types.ObjectId.isValid(commentId)) {
+      throw new ApiError(400, "Invalid comment ID");
+  }
+
+  // Check if the comment exists
+  const comment = await Comment.findById(commentId);
+  if (!comment) {
+      throw new ApiError(404, "Comment not found");
+  }
+
+  // Optionally check if the user is authorized to delete the comment
+  if (comment.userId.toString() !== userId.toString()) {
+      throw new ApiError(403, "You are not authorized to delete this comment");
+  }
+
+  // Delete the comment
+  const result = await Comment.findByIdAndDelete(commentId);
+  if (!result) {
+      throw new ApiError(500, "Something went wrong while deleting the comment");
+  }
+
+  return res.status(200).json({
+      status: 200,
+      message: "Comment deleted successfully"
+  });
+});
 
   
 
@@ -122,6 +155,7 @@ const updateComment = asyncHandler(async (req, res) => {
   export { 
     createComment ,
     updateComment ,
-    getComments
+    getComments,
+    deleteComment
 
   }

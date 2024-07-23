@@ -15,8 +15,9 @@ import {
 import {upload} from "../middlware/multerMiddleware.js"
 import { verifyJWT } from "../middlware/authMiddleware.js";
 import { createPost,   updatePost , deletePost, getPost, getPostsByUserId } from "../controllers/userPostControllers.js";
-import { createComment  , updateComment} from "../controllers/commentController.js";
-import { authMiddleware } from "../middlware/authMiddleware.js";
+import { createComment  , getComments, updateComment , deleteComment} from "../controllers/commentController.js";
+import { createNotification , getNotifications , markNotificationAsRead   } from "../controllers/notificationController.js";
+ 
  
 
 
@@ -58,11 +59,9 @@ routers.route("/cover-image").patch(verifyJWT, upload.single("coverImage"), upda
 
 // For the Post Routes 
  
-routers.post('/createPost', verifyJWT,  upload.fields([{ name: 'image', maxCount: 1 }]), createPost);
- 
+routers.post('/createPost', verifyJWT,  upload.fields([{ name: 'image', maxCount: 1 }]), createPost); 
 routers.get('/getPosts/:postId', verifyJWT, getPost);
 routers.get('/getPostsById/:userId', verifyJWT, getPostsByUserId);
-
 routers.put('/updatePosts/:postId', verifyJWT, upload.fields([{ name: 'image', maxCount: 1 }]), updatePost);
 routers.delete('/deletePosts/:postId', verifyJWT, deletePost);
 
@@ -72,9 +71,25 @@ routers.delete('/deletePosts/:postId', verifyJWT, deletePost);
 // Routes for the comments 
 
 routers.post('/comments/:postId', verifyJWT,  createComment);
+routers.get('/getComment/:postId', verifyJWT,  getComments);
+routers.put('/comments/:commentId'  , verifyJWT, updateComment); 
+routers.delete('/:commentId', verifyJWT,  deleteComment ); 
 
 
-routers.put('/comments/:commentId'  , verifyJWT, updateComment);  
+
+//  Routes for the Notification
+// Create a new notification (requires authentication)
+routers.post('/notifications', verifyJWT, createNotification);
+
+// Get all notifications for the authenticated user (requires authentication)
+routers.get('/getNotifications', verifyJWT, getNotifications);
+
+// Mark a specific notification as read (requires authentication)
+routers.patch('/updateNotifications/:notificationId/read', verifyJWT, markNotificationAsRead);
+
+ 
+
+ 
 
 
 export default routers
